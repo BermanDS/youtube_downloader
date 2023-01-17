@@ -2,15 +2,17 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.ipynb
+*.ipynb_checkpoints
+*.ipynb_checkpoints/
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
 build/
-develop-eggs/
-dist/
+data/
+log/
 downloads/
 eggs/
 .eggs/

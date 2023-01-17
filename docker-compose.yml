@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  app:
+    build: .
+    env_file:
+        - .env
+    container_name: youtube_parser_bot
+    ports:
+      - "$API_PORT:5004"
+      - "$FLOWER_PORT:5555"
+    volumes:
+      - ${LOCAL_DATA}:/usr/app/data
+      - ${LOGS_PATH}:/usr/app/log
+    environment:
+      TZ: $timezone
+      PYTHONUNBUFFERED: 0
