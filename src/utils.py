@@ -598,6 +598,8 @@ class AppEngine:
         self.queue_free = queue_free
         self.queue_start = queue_start
         self.int_token = int_token
+        self.token_name_task = 'task_id'
+        self.token_task = ''
         self.set_cookie = set_cookie
         self.uncorrect = uncorrect
         self.log_levels = ["debug", "info", "warn", "error"]
@@ -671,6 +673,26 @@ class AppEngine:
             self.log('checking redis', 'error', f"Parsing redis: {err}")
     
 
+    def check_repeat_process(self, token_name: str = 'task_id', token: str = ''):
+        """
+        authentification process
+        """
+
+        self.token_task = None
+        try:
+            self.token_task = self.request.cookies.get(self.token_name_task)
+        except Exception as err:
+            self.log('parsing cookie', 'error', f"Parsing cookie '{self.token_name_task}': {err}")
+        
+        if self.token_task is None:
+            self.parse_post = True
+        elif self.token_task == token:
+            self.parse_post = False
+            self.log('parsing cookie', 'info', "The task can not be repeated")
+        elif self.token_task != token:
+            self.token_task = token
+        
+
     def create_response(self, page_template: str = 'index.html', title: str = 'Youtube Downloader'):
 
         
@@ -691,8 +713,10 @@ class AppEngine:
             self.response.set_cookie(self.token_name, self.int_token)
         elif self.delcook:
             self.response.set_cookie(self.token_name, expires=0)
-    
+        elif self.authorized:
+            self.response.set_cookie(self.token_name_task, self.token_task)
 
+    
     def parse_post_params(self, cloud_path: str = 'temp'):
         """
         Parsing POST variables from request
@@ -739,22 +763,10 @@ class AppEngine:
             self.parse_post = True
         except Exception as err:
             self.log('parsing POST params', 'error', f"Parsing POST: {err}")
-            
+    
 ####################################################################################################
 #### additional procedures 
 #####################################################################################################
-
-def report_status(db_redis_ = None, key = '', status = 'done') -> bool:
-    """
-    procedure of reporting task's metainfo
-    """
-    
-    if db_redis_:
-        
-        return db_redis_.publish_message(key, status)
-    
-    return False
-
 
 def make_guid(*args) -> str:
     """

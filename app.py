@@ -175,21 +175,21 @@ def process_request():
     if all([app_engine.parse_post, app_engine.queue_free]) and \
         app_engine.params_task['kind'] == 'youtube' and \
         not app_engine.uncorrect:
-        
-        taskss = youtube_download_post.delay(app_engine.params_task)
-        task_id = taskss.id
-        if task_id: app_engine.queue_start = True
-
-        app_engine.log('Runing async task', 'info', f"Started task with task id {taskss.id} for {app_engine.params_task['kind']}.")
+        app_engine.check_repeat_process(token = make_guid(app_engine.params_task))
+        if app_engine.parse_post:
+            taskss = youtube_download_post.delay(app_engine.params_task)
+            task_id = taskss.id
+            if task_id: app_engine.queue_start = True
+            app_engine.log('Runing async task', 'info', f"Started task with task id {taskss.id} for {app_engine.params_task['kind']}.")
+    #---------------------------------------------------------------------
     elif app_engine.parse_post and \
         app_engine.params_task['kind'] == 'youtube' and \
         not app_engine.queue_free:
-
         app_engine.log('trying async task', 'error', f"The queue is busy for {app_engine.params_task['kind']}.")
+    #---------------------------------------------------------------------
     elif app_engine.parse_post and \
         app_engine.params_task['kind'] == 'youtube' and \
         not app_engine.uncorrect:
-
         app_engine.log('trying async task', 'error', f"Some parameters are not correct for {app_engine.params_task['kind']}.")
     
     #################################################################################################
