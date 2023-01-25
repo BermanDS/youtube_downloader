@@ -17,14 +17,19 @@ _node: ~/work/youtube_downloader$ docker-compose up --build -d
 
 if all correct you can see next in your browser:
 
-<h2 align="center"> ERD<br>
+<h2 align="center"> Before autentification<br>
 
   <img src="static/before_auth.png" title="hover text">
 </h2>
 
 And after authorization you can see next :
 
-<h2 align="center"> ERD<br>
+<h2 align="center"> After autentification<br>
 
   <img src="static/after_auth.png" title="hover text">
+</h2>
+
+<h2 align="center"> Architecture<br>
+
+  <img src="static/youtube_dwnld.jpg" title="hover text">
 </h2>
